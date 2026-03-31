@@ -32,8 +32,30 @@ connectDB().then(() => {
 
 const app = express();
 
-app.use(cors());
+// CORS Configuration for Production
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://smart-queue-d6d5e.web.app",
+  "https://smart-queue-d6d5e.firebaseapp.com"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
+
 app.use(express.json());
+
+// Health check for Render
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "ok", message: "Server is healthy" });
+});
 
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/queue", require("./routes/queueRoutes"));

@@ -1,4 +1,4 @@
-git branch -M main{
+{
   "name": "backend",
   "version": "1.0.0",
   "main": "server.js",
