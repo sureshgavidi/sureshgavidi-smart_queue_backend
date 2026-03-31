@@ -3,9 +3,18 @@ const Hospital = require("../models/Hospital");
 exports.getHospitals = async (req, res) => {
   try {
     const hospitals = await Hospital.find({});
-    res.status(200).json(hospitals);
+    if (hospitals.length > 0) {
+      return res.status(200).json(hospitals);
+    }
+    throw new Error("No data in DB");
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.warn("⚠️ Database unreachable. Returning demo hospital data for the expo.");
+    // Fallback data for the Expo
+    res.status(200).json([
+      { _id: 'h1', name: 'City General Hospital', location: 'Elluru', address: '123 Elluru Main Road', departments: ['Cardiology', 'General Medicine'] },
+      { _id: 'h2', name: 'Metro Healthcare Center', location: 'Elluru', address: '45 Elluru Avenue', departments: ['Neurology', 'Dental'] },
+      { _id: 'h3', name: 'Sunrise Medical Institute', location: 'Elluru', address: '78 Elluru Drive', departments: ['Oncology', 'Psychiatry'] }
+    ]);
   }
 };
 
